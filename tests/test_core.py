@@ -5,7 +5,7 @@ from solo_pm_tdd_lab.core import clamp, zscore
 
 NAN = float("nan") 
 
-### clamp ###
+#### clamp ####
 
 def test_clamp_inside_range():
     assert clamp(5, 0, 10) == 5
@@ -20,7 +20,7 @@ def test_clamp_invalid_bounds():
     with pytest.raises(ValueError):
         clamp(5, 10, 0)
 
-### zscore ###
+#### zscore ####
 
 def assert_list_close_with_nans(got, expected, *, rel=1e-12, abs=0.0):
     assert isinstance(got, list)
