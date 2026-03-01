@@ -135,6 +135,18 @@ def test_rolling_mean_accepts_iterables():
     out = rolling_mean((value for value in [2, 4, 6, 8]), 3)
     assert out == pytest.approx([4.0, 6.0])
 
+def test_rolling_mean_window_one_recovers_after_nan():
+    out = rolling_mean([1.0, NAN, 3.0], 1)
+    assert out[0] == 1.0
+    assert math.isnan(out[1])
+    assert out[2] == 3.0
+
+def test_rolling_mean_window_one_recovers_after_infinity():
+    out = rolling_mean([1.0, math.inf, 3.0], 1)
+    assert out[0] == 1.0
+    assert out[1] == math.inf
+    assert out[2] == 3.0
+
 def test_rolling_mean_rejects_non_positive_window():
     with pytest.raises(ValueError):
         rolling_mean([1.0, 2.0], 0)

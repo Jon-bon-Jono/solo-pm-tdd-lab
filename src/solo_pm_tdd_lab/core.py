@@ -108,12 +108,10 @@ def rolling_mean(data: Iterable[Number], window_size: int) -> List[float]:
     if window_size > len(xs):
         raise ValueError("window_size cannot be larger than the data length")
 
-    window_total = sum(xs[:window_size])
-    means = [window_total / window_size]
-
-    for index in range(window_size, len(xs)):
-        window_total += xs[index] - xs[index - window_size]
-        means.append(window_total / window_size)
+    means = []
+    for start in range(len(xs) - window_size + 1):
+        window = xs[start:start + window_size]
+        means.append(sum(window) / window_size)
 
     return means
 
