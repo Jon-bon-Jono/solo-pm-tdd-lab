@@ -3,12 +3,16 @@ from typing import Iterable, List, Union
 
 Number = Union[int, float]
 
+### clamp ###
+
 def clamp(x: float, lo: float, hi: float) -> float:
     """Clamp x to [lo, hi]."""
     #HI
     if lo > hi:
         raise ValueError("lo must be less than or equal to hi")
     return max(lo, min(x, hi))
+
+### zscore ###
 
 def zscore(
     data: Iterable[Number],
