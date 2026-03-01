@@ -1,7 +1,8 @@
-import pytest
 import math
 
-from solo_pm_tdd_lab.core import clamp, zscore
+import pytest
+
+from solo_pm_tdd_lab.core import clamp, rolling_mean, zscore
 
 NAN = float("nan") 
 
@@ -115,3 +116,41 @@ def test_accepts_iterables_like_tuples_and_generators():
     expected = [-1.224744871391589, 0.0, 1.224744871391589]
     assert_list_close_with_nans(out1, expected)
     assert_list_close_with_nans(out2, expected)
+
+#### rolling_mean ####
+
+def test_rolling_mean_basic_window_two():
+    out = rolling_mean([1.0, 3.0, 5.0, 7.0], 2)
+    assert out == pytest.approx([2.0, 4.0, 6.0])
+
+def test_rolling_mean_window_one_returns_original_values_as_floats():
+    out = rolling_mean([1, 2, 3], 1)
+    assert out == [1.0, 2.0, 3.0]
+
+def test_rolling_mean_window_equal_to_input_length():
+    out = rolling_mean([2.0, 4.0, 6.0], 3)
+    assert out == [4.0]
+
+def test_rolling_mean_accepts_iterables():
+    out = rolling_mean((value for value in [2, 4, 6, 8]), 3)
+    assert out == pytest.approx([4.0, 6.0])
+
+def test_rolling_mean_window_one_recovers_after_nan():
+    out = rolling_mean([1.0, NAN, 3.0], 1)
+    assert out[0] == 1.0
+    assert math.isnan(out[1])
+    assert out[2] == 3.0
+
+def test_rolling_mean_window_one_recovers_after_infinity():
+    out = rolling_mean([1.0, math.inf, 3.0], 1)
+    assert out[0] == 1.0
+    assert out[1] == math.inf
+    assert out[2] == 3.0
+
+def test_rolling_mean_rejects_non_positive_window():
+    with pytest.raises(ValueError):
+        rolling_mean([1.0, 2.0], 0)
+
+def test_rolling_mean_rejects_window_larger_than_data():
+    with pytest.raises(ValueError):
+        rolling_mean([1.0, 2.0], 3)

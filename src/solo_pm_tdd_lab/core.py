@@ -98,3 +98,20 @@ def zscore(
 
     return [math.nan if math.isnan(x) else (x - mean) / std for x in xs]
 
+
+def rolling_mean(data: Iterable[Number], window_size: int) -> List[float]:
+    """Return the mean for each contiguous window of ``window_size`` values."""
+    if window_size <= 0:
+        raise ValueError("window_size must be a positive integer")
+
+    xs = [float(x) for x in data]
+    if window_size > len(xs):
+        raise ValueError("window_size cannot be larger than the data length")
+
+    means = []
+    for start in range(len(xs) - window_size + 1):
+        window = xs[start:start + window_size]
+        means.append(sum(window) / window_size)
+
+    return means
+
