@@ -1,5 +1,8 @@
 import math
+import logging
 from typing import Iterable, List, Union
+
+logger = logging.getLogger(__name__)
 
 Number = Union[int, float]
 
@@ -7,8 +10,8 @@ Number = Union[int, float]
 
 def clamp(x: float, lo: float, hi: float) -> float:
     """Clamp x to [lo, hi]."""
-    #HI
     if lo > hi:
+        logger.error("clamp - lo > hi: %f > %f", lo, hi)
         raise ValueError("lo must be less than or equal to hi") ##
     return max(lo, min(x, hi))
 
@@ -107,7 +110,7 @@ def rolling_mean(data: Iterable[Number], window_size: int) -> List[float]:
     xs = [float(x) for x in data]
     if window_size > len(xs):
         raise ValueError("window_size cannot be larger than the data length")
-
+    logger.debug("rolling_mean: Computing rolling mean of %s using window size %d", data, window_size)
     means = []
     for start in range(len(xs) - window_size + 1):
         window = xs[start:start + window_size]
